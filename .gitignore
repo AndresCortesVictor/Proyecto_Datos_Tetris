@@ -1,0 +1,12 @@
+# Binarios y objetos de compilacion
+Debug_Linux/
+Debug_Win32/
+Release_Linux/
+Release_Win32/
+*.o
+*.bin
+*.exe
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
