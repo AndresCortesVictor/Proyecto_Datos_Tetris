@@ -4,7 +4,7 @@ using namespace sf;
 
 int main(int argc, char *argv[]) {
 		RenderWindow w(VideoMode({640, 480}), "Tetris");
-		RectangleShape celda(Vector2f(20.f, 20.f));   // así se dibujan los bloques
+		RectangleShape celda(Vector2f(20.f, 20.f));
 		celda.setPosition(Vector2f(100.f, 200.f));
 		celda.setFillColor(Color::Red);
 
@@ -29,6 +29,3 @@ int main(int argc, char *argv[]) {
 			w.display();
 		}
 }
-
-
-
