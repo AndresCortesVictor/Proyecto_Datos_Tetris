@@ -2,6 +2,7 @@
 #define INTERFAZ_VISUAL_H
 
 #include <SFML/Graphics.hpp>
+#include <optional>
 
 class InterfazVisual {
 private:
@@ -10,11 +11,9 @@ private:
     sf::RectangleShape cajaScore;
     
     sf::Font fuente;
-    sf::Text textoHold;
-    sf::Text textoNext;
-    sf::Text textoScore;
-    
-    bool fuenteCargada;
+    std::optional<sf::Text> textoHold;
+    std::optional<sf::Text> textoNext;
+    std::optional<sf::Text> textoScore;
 
 public:
     InterfazVisual();
