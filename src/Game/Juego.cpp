@@ -6,7 +6,6 @@ Juego::Juego() : ventana(sf::VideoMode({800, 600}), "Tetris"),
                  estadoActual(EstadoJuego::Portada) {
     
     ventana.setFramerateLimit(FPS);
-    piezaActual.configurarPiezaPrueba(250.0f, 0.0f, sf::Color::Cyan);
     
     if (fuente.openFromFile("assets/arial.ttf")) {
         titulo.emplace(fuente);
@@ -48,6 +47,8 @@ void Juego::procesarEventos() {
                     colaEventos.encolarOrdenado(e1);
                     colaEventos.encolarOrdenado(e2);
                     colaEventos.encolarOrdenado(e3);
+                    
+                    piezaActiva = colaPiezas.sacarPieza();
                 }
             }
         }
@@ -98,6 +99,6 @@ void Juego::renderizarPortada() {
 
 void Juego::renderizarJuego() {
     tableroVisual.renderizar(ventana);
-    piezaActual.renderizar(ventana);
+    piezaActiva.dibujar(ventana);
     interfazVisual.renderizar(ventana);
 }

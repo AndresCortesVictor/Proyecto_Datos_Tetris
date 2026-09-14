@@ -4,9 +4,10 @@
 #include <SFML/Graphics.hpp>
 #include <optional>
 #include "../visuales/TableroVisual.h"
-#include "../visuales/PiezaVisual.h"
 #include "../visuales/InterfazVisual.h"
 #include "../Estructuras/ColaEventos.h"
+#include "../Estructuras/ColaPiezas.h"
+#include "Pieza.h"
 
 enum class EstadoJuego {
     Portada,
@@ -19,7 +20,6 @@ private:
     const unsigned int FPS = 60;
     
     TableroVisual tableroVisual;
-    PiezaVisual piezaActual;
     InterfazVisual interfazVisual;
 
     EstadoJuego estadoActual;
@@ -29,6 +29,8 @@ private:
     
     sf::Clock relojPartida;
     ColaEventos colaEventos;
+    ColaPiezas colaPiezas;
+    Pieza piezaActiva;
 
     void procesarEventos();
     void actualizar();
