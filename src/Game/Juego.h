@@ -7,6 +7,8 @@
 #include "../visuales/InterfazVisual.h"
 #include "../Estructuras/ColaEventos.h"
 #include "../Estructuras/ColaPiezas.h"
+#include "../Estructuras/PilaHold.h"
+#include "../Estructuras/ListaTablero.h"
 #include "Pieza.h"
 
 enum class EstadoJuego {
@@ -30,7 +32,14 @@ private:
     sf::Clock relojPartida;
     ColaEventos colaEventos;
     ColaPiezas colaPiezas;
+    PilaHold pilaHold;
+    ListaTablero listaTablero;
     Pieza piezaActiva;
+    
+    sf::Clock relojCaida;
+    float velocidadCaida;
+    int puntajeTotal;
+    bool controlesInvertidos;
 
     void procesarEventos();
     void actualizar();
