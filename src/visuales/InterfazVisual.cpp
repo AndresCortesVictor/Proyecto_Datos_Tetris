@@ -8,7 +8,7 @@ InterfazVisual::InterfazVisual() {
     cajaHold.setOutlineColor(sf::Color(100, 100, 100));
     cajaHold.setOutlineThickness(2.0f);
 
-    cajaNext.setSize(sf::Vector2f(120.0f, 240.0f));
+    cajaNext.setSize(sf::Vector2f(140.0f, 250.0f));
     cajaNext.setPosition(sf::Vector2f(600.0f, 50.0f));
     cajaNext.setFillColor(sf::Color(40, 40, 40));
     cajaNext.setOutlineColor(sf::Color(100, 100, 100));
@@ -44,18 +44,28 @@ void InterfazVisual::actualizarPuntaje(int puntos) {
     }
 }
 
+void InterfazVisual::actualizarNext(TipoPieza t1, TipoPieza t2, TipoPieza t3) {
+    piezasNext[0].configurar(t1, 620.0f, 80.0f);
+    piezasNext[1].configurar(t2, 620.0f, 150.0f);
+    piezasNext[2].configurar(t3, 620.0f, 220.0f);
+}
+
+void InterfazVisual::actualizarHold(TipoPieza t) {
+    piezaHold.configurar(t, 100.0f, 75.0f);
+}
+
 void InterfazVisual::renderizar(sf::RenderWindow& ventana) {
     ventana.draw(cajaHold);
     ventana.draw(cajaNext);
     ventana.draw(cajaScore);
     
-    if (textoHold) {
-        ventana.draw(*textoHold);
-    }
-    if (textoNext) {
-        ventana.draw(*textoNext);
-    }
-    if (textoScore) {
-        ventana.draw(*textoScore);
+    if (textoHold) ventana.draw(*textoHold);
+    if (textoNext) ventana.draw(*textoNext);
+    if (textoScore) ventana.draw(*textoScore);
+    
+    piezaHold.renderizar(ventana);
+    
+    for (int i = 0; i < 3; ++i) {
+        piezasNext[i].renderizar(ventana);
     }
 }

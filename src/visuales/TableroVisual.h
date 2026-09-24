@@ -2,20 +2,24 @@
 #define TABLERO_VISUAL_H
 
 #include <SFML/Graphics.hpp>
+#include "../Game/TipoPieza.h"
+
+class ListaTablero;
 
 class TableroVisual {
 private:
-    const int FILAS = 20;
-    const int COLUMNAS = 10;
-    const float TAMANO_CELDA = 30.0f;
+    sf::RectangleShape fondo;
+    sf::RectangleShape celdasVacias[20][10];
+    sf::RectangleShape bloqueLleno;
     
-    sf::Vector2f posicionOrigen;
-    sf::RectangleShape celdaFondo;
-    sf::RectangleShape celdaOcupada;
+    static constexpr int FILAS = 20;
+    static constexpr int COLUMNAS = 10;
+    static constexpr float TAMANO_CELDA = 30.0f;
 
 public:
-    TableroVisual(float x, float y);
-    void renderizar(sf::RenderWindow& ventana);
+    TableroVisual();
+    sf::Color getColorDeTipo(TipoPieza tipo) const;
+    void renderizar(sf::RenderWindow& ventana, const ListaTablero& tableroLogico);
 };
 
 #endif

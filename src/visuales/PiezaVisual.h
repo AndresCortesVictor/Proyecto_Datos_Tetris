@@ -8,12 +8,10 @@ class PiezaVisual {
 private:
     sf::RectangleShape bloques[4];
     static constexpr float TAMANO_CELDA = 30.0f;
-    static constexpr float ORIGEN_X = 250.0f;
-    static constexpr float ORIGEN_Y = 0.0f;
 
 public:
     PiezaVisual();
-    void configurar(TipoPieza tipo, int gridX, int gridY);
+    void configurar(TipoPieza tipo, float offsetX, float offsetY, float gridX = 0, float gridY = 0);
     void renderizar(sf::RenderWindow& ventana);
 };
 

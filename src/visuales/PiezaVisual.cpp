@@ -8,7 +8,7 @@ PiezaVisual::PiezaVisual() {
     }
 }
 
-void PiezaVisual::configurar(TipoPieza tipo, int gridX, int gridY) {
+void PiezaVisual::configurar(TipoPieza tipo, float offsetX, float offsetY, float gridX, float gridY) {
     int coordenadas[4][2] = {0};
     sf::Color color;
 
@@ -69,8 +69,8 @@ void PiezaVisual::configurar(TipoPieza tipo, int gridX, int gridY) {
 
     for (int i = 0; i < 4; ++i) {
         bloques[i].setFillColor(color);
-        float px = ORIGEN_X + ((gridX + coordenadas[i][0]) * TAMANO_CELDA);
-        float py = ORIGEN_Y + ((gridY + coordenadas[i][1]) * TAMANO_CELDA);
+        float px = offsetX + ((gridX + coordenadas[i][0]) * TAMANO_CELDA);
+        float py = offsetY + ((gridY + coordenadas[i][1]) * TAMANO_CELDA);
         bloques[i].setPosition(sf::Vector2f(px, py));
     }
 }
