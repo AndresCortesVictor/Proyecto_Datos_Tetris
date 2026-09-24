@@ -2,7 +2,6 @@
 #define COLA_PIEZAS_H
 
 #include "../Game/Pieza.h"
-#include <vector>
 
 struct NodoPieza {
     Pieza dato;
@@ -16,13 +15,13 @@ private:
     NodoPieza* final;
     int cantidad;
 
-    std::vector<Pieza> generarBolsa();
+    void generarBolsa(Pieza bolsa[7]);
 
 public:
     ColaPiezas();
     ~ColaPiezas();
 
-    void insertarBolsa(const std::vector<Pieza>& bolsa);
+    void insertarBolsa(const Pieza bolsa[7]);
     Pieza sacarPieza();
     Pieza verDentro(int posicion) const;
     bool estaVacia() const;

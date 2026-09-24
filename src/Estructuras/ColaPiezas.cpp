@@ -1,10 +1,12 @@
 #include "ColaPiezas.h"
-#include <algorithm>
-#include <random>
-#include <chrono>
+#include <cstdlib>
+#include <ctime>
 
 ColaPiezas::ColaPiezas() : frente(nullptr), final(nullptr), cantidad(0) {
-    insertarBolsa(generarBolsa());
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    Pieza bolsaInicial[7];
+    generarBolsa(bolsaInicial);
+    insertarBolsa(bolsaInicial);
 }
 
 ColaPiezas::~ColaPiezas() {
@@ -15,21 +17,26 @@ ColaPiezas::~ColaPiezas() {
     }
 }
 
-std::vector<Pieza> ColaPiezas::generarBolsa() {
-    std::vector<Pieza> bolsa = {
-        {TipoPieza::I}, {TipoPieza::O}, {TipoPieza::T},
-        {TipoPieza::S}, {TipoPieza::Z}, {TipoPieza::J}, {TipoPieza::L}
-    };
-    
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(bolsa.begin(), bolsa.end(), std::default_random_engine(seed));
-    
-    return bolsa;
+void ColaPiezas::generarBolsa(Pieza bolsa[7]) {
+    bolsa[0] = Pieza(TipoPieza::I);
+    bolsa[1] = Pieza(TipoPieza::O);
+    bolsa[2] = Pieza(TipoPieza::T);
+    bolsa[3] = Pieza(TipoPieza::S);
+    bolsa[4] = Pieza(TipoPieza::Z);
+    bolsa[5] = Pieza(TipoPieza::J);
+    bolsa[6] = Pieza(TipoPieza::L);
+
+    for (int i = 6; i > 0; --i) {
+        int j = std::rand() % (i + 1);
+        Pieza temp = bolsa[i];
+        bolsa[i] = bolsa[j];
+        bolsa[j] = temp;
+    }
 }
 
-void ColaPiezas::insertarBolsa(const std::vector<Pieza>& bolsa) {
-    for (const auto& p : bolsa) {
-        NodoPieza* nuevo = new NodoPieza(p);
+void ColaPiezas::insertarBolsa(const Pieza bolsa[7]) {
+    for (int i = 0; i < 7; ++i) {
+        NodoPieza* nuevo = new NodoPieza(bolsa[i]);
         if (frente == nullptr) {
             frente = nuevo;
             final = nuevo;
@@ -53,12 +60,14 @@ Pieza ColaPiezas::sacarPieza() {
     if (frente == nullptr) {
         final = nullptr;
     }
-    temp->siguiente = nullptr;
+    
     delete temp;
     cantidad--;
     
     if (cantidad <= 3) {
-        insertarBolsa(generarBolsa());
+        Pieza nuevaBolsa[7];
+        generarBolsa(nuevaBolsa);
+        insertarBolsa(nuevaBolsa);
     }
     
     return p;
