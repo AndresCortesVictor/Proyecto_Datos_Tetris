@@ -7,6 +7,7 @@
 #include "../visuales/InterfazVisual.h"
 #include "../Estructuras/ColaEventos.h"
 #include "../Estructuras/ColaPiezas.h"
+#include "../Estructuras/PilaHold.h"
 #include "Pieza.h"
 
 enum class EstadoJuego {
@@ -30,6 +31,7 @@ private:
     sf::Clock relojPartida;
     ColaEventos colaEventos;
     ColaPiezas colaPiezas;
+    PilaHold pilaHold;
     Pieza piezaActiva;
 
     void procesarEventos();

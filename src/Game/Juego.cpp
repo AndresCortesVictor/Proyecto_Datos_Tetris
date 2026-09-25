@@ -50,6 +50,17 @@ void Juego::procesarEventos() {
                     
                     piezaActiva = colaPiezas.sacarPieza();
                 }
+            } else if (estadoActual == EstadoJuego::Jugando) {
+                if (keyPressed->code == sf::Keyboard::Key::C) {
+                    if (pilaHold.estaVacia()) {
+                        pilaHold.push(Pieza(piezaActiva.getTipo()));
+                        piezaActiva = colaPiezas.sacarPieza();
+                    } else {
+                        Pieza temporal = pilaHold.pop();
+                        pilaHold.push(Pieza(piezaActiva.getTipo()));
+                        piezaActiva = temporal;
+                    }
+                }
             }
         }
     }
@@ -61,6 +72,8 @@ void Juego::actualizar() {
         TipoPieza next2 = colaPiezas.verDentro(1).getTipo();
         TipoPieza next3 = colaPiezas.verDentro(2).getTipo();
         interfazVisual.actualizarNext(next1, next2, next3);
+        
+        interfazVisual.actualizarHold(pilaHold.verCima().getTipo());
 
         float tiempoActual = relojPartida.getElapsedTime().asSeconds();
         

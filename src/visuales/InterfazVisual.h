@@ -17,12 +17,14 @@ private:
     std::optional<sf::Text> textoNext;
     std::optional<sf::Text> textoScore;
 
+    PiezaVisual piezaHold;
     PiezaVisual piezasNext[3];
 
 public:
     InterfazVisual();
     
     void actualizarPuntaje(int puntos);
+    void actualizarHold(TipoPieza p);
     void actualizarNext(TipoPieza p1, TipoPieza p2, TipoPieza p3);
     void renderizar(sf::RenderWindow& ventana);
 };
