@@ -3,9 +3,11 @@
 
 Juego::Juego() : ventana(sf::VideoMode({800, 600}), "Tetris"),
                  tableroVisual(250.0f, 0.0f),
-                 estadoActual(EstadoJuego::Portada) {
+                 estadoActual(EstadoJuego::Portada),
+                 gestorPuntajes("puntajes.txt") {
     
     ventana.setFramerateLimit(FPS);
+    gestorPuntajes.cargarPuntajes();
     
     if (fuente.openFromFile("assets/arial.ttf")) {
         titulo.emplace(fuente);
@@ -17,6 +19,22 @@ Juego::Juego() : ventana(sf::VideoMode({800, 600}), "Tetris"),
         textoPresionaTecla->setString("Presiona ENTER para jugar");
         textoPresionaTecla->setCharacterSize(30);
         textoPresionaTecla->setPosition(sf::Vector2f(220.0f, 350.0f));
+        
+        textoIrPuntajes.emplace(fuente);
+        textoIrPuntajes->setString("Presiona P para ver Puntajes");
+        textoIrPuntajes->setCharacterSize(20);
+        textoIrPuntajes->setPosition(sf::Vector2f(260.0f, 400.0f));
+        
+        textoTituloPuntajes.emplace(fuente, "MEJORES PUNTAJES", 40);
+        textoTituloPuntajes->setPosition(sf::Vector2f(200.0f, 50.0f));
+        
+        textoInstruccionPuntajes.emplace(fuente, "1: Ordenar (Insercion) | 2: Ordenar (MergeSort) | ESC: Volver", 20);
+        textoInstruccionPuntajes->setPosition(sf::Vector2f(120.0f, 100.0f));
+        
+        for (int i = 0; i < 10; ++i) {
+            textosPuntajes[i].emplace(fuente, "", 24);
+            textosPuntajes[i]->setPosition(sf::Vector2f(250.0f, 160.0f + (i * 40.0f)));
+        }
     }
 }
 
@@ -49,6 +67,8 @@ void Juego::procesarEventos() {
                     colaEventos.encolarOrdenado(e3);
                     
                     piezaActiva = colaPiezas.sacarPieza();
+                } else if (keyPressed->code == sf::Keyboard::Key::P) {
+                    estadoActual = EstadoJuego::MenuPuntajes;
                 }
             } else if (estadoActual == EstadoJuego::Jugando) {
                 if (keyPressed->code == sf::Keyboard::Key::C) {
@@ -60,6 +80,14 @@ void Juego::procesarEventos() {
                         pilaHold.push(Pieza(piezaActiva.getTipo()));
                         piezaActiva = temporal;
                     }
+                }
+            } else if (estadoActual == EstadoJuego::MenuPuntajes) {
+                if (keyPressed->code == sf::Keyboard::Key::Escape) {
+                    estadoActual = EstadoJuego::Portada;
+                } else if (keyPressed->code == sf::Keyboard::Key::Num1) {
+                    gestorPuntajes.ordenarPorInsercion();
+                } else if (keyPressed->code == sf::Keyboard::Key::Num2) {
+                    gestorPuntajes.ordenarPorMerge();
                 }
             }
         }
@@ -99,6 +127,8 @@ void Juego::renderizar() {
     
     if (estadoActual == EstadoJuego::Portada) {
         renderizarPortada();
+    } else if (estadoActual == EstadoJuego::MenuPuntajes) {
+        renderizarMenuPuntajes();
     } else if (estadoActual == EstadoJuego::Jugando) {
         renderizarJuego();
     }
@@ -110,8 +140,35 @@ void Juego::renderizarPortada() {
     if (titulo) {
         ventana.draw(*titulo);
     }
+    if (textoIrPuntajes) {
+        ventana.draw(*textoIrPuntajes);
+    }
     if (textoPresionaTecla) {
         ventana.draw(*textoPresionaTecla);
+    }
+}
+
+void Juego::renderizarMenuPuntajes() {
+    if (textoTituloPuntajes) {
+        ventana.draw(*textoTituloPuntajes);
+    }
+    if (textoInstruccionPuntajes) {
+        ventana.draw(*textoInstruccionPuntajes);
+    }
+
+    NodoPuntaje* actual = gestorPuntajes.getLista();
+    int contador = 0; // Para el arreglo (0 a 9)
+    
+    while (actual != nullptr && contador < 10) {
+        std::string linea = std::to_string(contador + 1) + ". " + actual->dato.nombre + " - " + std::to_string(actual->dato.puntos);
+        
+        if (textosPuntajes[contador]) {
+            textosPuntajes[contador]->setString(linea);
+            ventana.draw(*textosPuntajes[contador]);
+        }
+        
+        actual = actual->siguiente;
+        contador++;
     }
 }
 

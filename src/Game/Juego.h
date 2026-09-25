@@ -8,11 +8,13 @@
 #include "../Estructuras/ColaEventos.h"
 #include "../Estructuras/ColaPiezas.h"
 #include "../Estructuras/PilaHold.h"
+#include "../Estructuras/GestorPuntajes.h"
 #include "Pieza.h"
 
 enum class EstadoJuego {
     Portada,
-    Jugando
+    Jugando,
+    MenuPuntajes
 };
 
 class Juego {
@@ -27,17 +29,24 @@ private:
     sf::Font fuente;
     std::optional<sf::Text> titulo;
     std::optional<sf::Text> textoPresionaTecla;
+    std::optional<sf::Text> textoIrPuntajes;
+    
+    std::optional<sf::Text> textoTituloPuntajes;
+    std::optional<sf::Text> textoInstruccionPuntajes;
+    std::optional<sf::Text> textosPuntajes[10];
     
     sf::Clock relojPartida;
     ColaEventos colaEventos;
     ColaPiezas colaPiezas;
     PilaHold pilaHold;
+    GestorPuntajes gestorPuntajes;
     Pieza piezaActiva;
 
     void procesarEventos();
     void actualizar();
     void renderizar();
     void renderizarPortada();
+    void renderizarMenuPuntajes();
     void renderizarJuego();
 
 public:

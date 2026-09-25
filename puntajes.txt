@@ -1,0 +1,15 @@
+Andres 1200
+Maria 3400
+Juan 800
+Sofia 5500
+Carlos 2100
+Luis 4300
+Ana 900
+Pedro 6000
+Elena 1500
+Diego 2800
+Valeria 4100
+Javier 1900
+Lucia 3700
+Mateo 2400
+Camila 5200
