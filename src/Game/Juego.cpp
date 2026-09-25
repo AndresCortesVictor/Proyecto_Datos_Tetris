@@ -4,7 +4,8 @@
 Juego::Juego() : ventana(sf::VideoMode({800, 600}), "Tetris"),
                  tableroVisual(250.0f, 0.0f),
                  estadoActual(EstadoJuego::Portada),
-                 gestorPuntajes("puntajes.txt") {
+                 gestorPuntajes("puntajes.txt"),
+                 puntajeActual(0) {
     
     ventana.setFramerateLimit(FPS);
     gestorPuntajes.cargarPuntajes();
@@ -80,6 +81,19 @@ void Juego::procesarEventos() {
                         pilaHold.push(Pieza(piezaActiva.getTipo()));
                         piezaActiva = temporal;
                     }
+                } else if (keyPressed->code == sf::Keyboard::Key::Left) {
+                    if (!tablero.colisiona(piezaActiva, piezaActiva.getX() - 1, piezaActiva.getY())) {
+                        piezaActiva.mover(-1, 0);
+                    }
+                } else if (keyPressed->code == sf::Keyboard::Key::Right) {
+                    if (!tablero.colisiona(piezaActiva, piezaActiva.getX() + 1, piezaActiva.getY())) {
+                        piezaActiva.mover(1, 0);
+                    }
+                } else if (keyPressed->code == sf::Keyboard::Key::Down) {
+                    if (!tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY() + 1)) {
+                        piezaActiva.mover(0, 1);
+                        relojCaida.restart();
+                    }
                 }
             } else if (estadoActual == EstadoJuego::MenuPuntajes) {
                 if (keyPressed->code == sf::Keyboard::Key::Escape) {
@@ -118,6 +132,29 @@ void Juego::actualizar() {
                     
                 }
             }
+        }
+        
+        interfazVisual.actualizarPuntaje(puntajeActual);
+
+        // Gravedad
+        if (relojCaida.getElapsedTime().asSeconds() > 0.5f) {
+            if (!tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY() + 1)) {
+                piezaActiva.mover(0, 1);
+            } else {
+                tablero.fijarPieza(piezaActiva);
+                int lineas = tablero.limpiarLineas();
+                if (lineas > 0) {
+                    puntajeActual += (lineas * 100);
+                }
+                
+                piezaActiva = colaPiezas.sacarPieza();
+                
+                // Game Over básico
+                if (tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY())) {
+                    estadoActual = EstadoJuego::Portada; // Volver al inicio por ahora
+                }
+            }
+            relojCaida.restart();
         }
     }
 }
@@ -173,7 +210,7 @@ void Juego::renderizarMenuPuntajes() {
 }
 
 void Juego::renderizarJuego() {
-    tableroVisual.renderizar(ventana);
+    tableroVisual.renderizar(ventana, tablero);
     piezaActiva.dibujar(ventana);
     interfazVisual.renderizar(ventana);
 }

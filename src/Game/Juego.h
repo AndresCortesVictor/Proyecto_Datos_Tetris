@@ -9,6 +9,7 @@
 #include "../Estructuras/ColaPiezas.h"
 #include "../Estructuras/PilaHold.h"
 #include "../Estructuras/GestorPuntajes.h"
+#include "../Estructuras/ListaTablero.h"
 #include "Pieza.h"
 
 enum class EstadoJuego {
@@ -36,11 +37,14 @@ private:
     std::optional<sf::Text> textosPuntajes[10];
     
     sf::Clock relojPartida;
+    sf::Clock relojCaida;
     ColaEventos colaEventos;
     ColaPiezas colaPiezas;
     PilaHold pilaHold;
     GestorPuntajes gestorPuntajes;
+    ListaTablero tablero;
     Pieza piezaActiva;
+    int puntajeActual;
 
     void procesarEventos();
     void actualizar();

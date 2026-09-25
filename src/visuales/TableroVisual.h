@@ -2,6 +2,7 @@
 #define TABLERO_VISUAL_H
 
 #include <SFML/Graphics.hpp>
+#include "../Estructuras/ListaTablero.h"
 
 class TableroVisual {
 private:
@@ -15,7 +16,7 @@ private:
 
 public:
     TableroVisual(float x, float y);
-    void renderizar(sf::RenderWindow& ventana);
+    void renderizar(sf::RenderWindow& ventana, const ListaTablero& tableroLogico);
 };
 
 #endif
