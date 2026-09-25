@@ -57,6 +57,11 @@ void Juego::procesarEventos() {
 
 void Juego::actualizar() {
     if (estadoActual == EstadoJuego::Jugando) {
+        TipoPieza next1 = colaPiezas.verDentro(0).getTipo();
+        TipoPieza next2 = colaPiezas.verDentro(1).getTipo();
+        TipoPieza next3 = colaPiezas.verDentro(2).getTipo();
+        interfazVisual.actualizarNext(next1, next2, next3);
+
         float tiempoActual = relojPartida.getElapsedTime().asSeconds();
         
         if (!colaEventos.estaVacia()) {

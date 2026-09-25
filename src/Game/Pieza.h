@@ -20,6 +20,10 @@ public:
     TipoPieza getTipo() const;
     void mover(int dx, int dy);
     void dibujar(sf::RenderWindow& ventana);
+
+    int getX() const;
+    int getY() const;
+    void obtenerPosicionesRelativas(int posiciones[4][2]) const;
 };
 
 #endif

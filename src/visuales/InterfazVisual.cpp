@@ -44,6 +44,13 @@ void InterfazVisual::actualizarPuntaje(int puntos) {
     }
 }
 
+void InterfazVisual::actualizarNext(TipoPieza p1, TipoPieza p2, TipoPieza p3) {
+    float escala = 0.8f;
+    piezasNext[0].configurar(p1, 612.0f, 60.0f, 0, 0, escala);
+    piezasNext[1].configurar(p2, 612.0f, 130.0f, 0, 0, escala);
+    piezasNext[2].configurar(p3, 612.0f, 200.0f, 0, 0, escala);
+}
+
 void InterfazVisual::renderizar(sf::RenderWindow& ventana) {
     ventana.draw(cajaHold);
     ventana.draw(cajaNext);
@@ -57,5 +64,9 @@ void InterfazVisual::renderizar(sf::RenderWindow& ventana) {
     }
     if (textoScore) {
         ventana.draw(*textoScore);
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        piezasNext[i].renderizar(ventana);
     }
 }

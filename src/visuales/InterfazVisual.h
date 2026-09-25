@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <optional>
+#include "PiezaVisual.h"
+#include "../Game/TipoPieza.h"
 
 class InterfazVisual {
 private:
@@ -15,10 +17,13 @@ private:
     std::optional<sf::Text> textoNext;
     std::optional<sf::Text> textoScore;
 
+    PiezaVisual piezasNext[3];
+
 public:
     InterfazVisual();
     
     void actualizarPuntaje(int puntos);
+    void actualizarNext(TipoPieza p1, TipoPieza p2, TipoPieza p3);
     void renderizar(sf::RenderWindow& ventana);
 };
 
