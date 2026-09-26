@@ -152,3 +152,21 @@ void ListaTablero::importarMatriz(const TipoPieza origen[20][10]) {
         actual = actual->siguiente;
     }
 }
+
+int ListaTablero::detonarBomba(int filaY) {
+    NodoFila* actual = cabeza;
+    int index = 0;
+    int lineasAfectadas = 0;
+    while (actual != nullptr && index <= filaY + 1) {
+        if (index == filaY || index == filaY + 1) {
+            for (int c = 0; c < 10; c++) {
+                actual->celdas[c] = TipoPieza::I; // Llenamos de algo para que se considere línea llena
+            }
+            lineasAfectadas++;
+        }
+        actual = actual->siguiente;
+        index++;
+    }
+    // Usamos la misma función para barrerlas
+    return limpiarLineas();
+}

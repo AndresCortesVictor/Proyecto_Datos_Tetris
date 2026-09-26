@@ -61,6 +61,12 @@ void PiezaVisual::configurar(TipoPieza tipo, float offsetX, float offsetY, int g
                 coordenadas[2][0] = 1; coordenadas[2][1] = 1;
                 coordenadas[3][0] = 2; coordenadas[3][1] = 1;
                 break;
+            case TipoPieza::Blanca:
+                coordenadas[0][0] = 0; coordenadas[0][1] = 0;
+                coordenadas[1][0] = 0; coordenadas[1][1] = 0;
+                coordenadas[2][0] = 0; coordenadas[2][1] = 0;
+                coordenadas[3][0] = 0; coordenadas[3][1] = 0;
+                break;
             default:
                 break;
         }
@@ -74,6 +80,7 @@ void PiezaVisual::configurar(TipoPieza tipo, float offsetX, float offsetY, int g
         case TipoPieza::Z: color = sf::Color::Red; break;
         case TipoPieza::J: color = sf::Color::Blue; break;
         case TipoPieza::L: color = sf::Color(255, 165, 0); break;
+        case TipoPieza::Blanca: color = sf::Color::White; break;
         default: color = sf::Color::Transparent; break;
     }
 

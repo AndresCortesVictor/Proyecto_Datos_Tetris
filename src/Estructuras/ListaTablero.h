@@ -26,6 +26,7 @@ public:
     bool colisiona(const Pieza& p, int nuevaX, int nuevaY) const;
     void fijarPieza(const Pieza& p);
     int limpiarLineas();
+    int detonarBomba(int filaY);
     TipoPieza obtenerCelda(int fila, int columna) const;
     void vaciar();
     void exportarMatriz(TipoPieza destino[20][10]) const;

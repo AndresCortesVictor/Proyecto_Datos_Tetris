@@ -2,7 +2,7 @@
 #define TIPO_PIEZA_H
 
 enum class TipoPieza {
-    I, O, T, S, Z, J, L, Ninguna
+    I, O, T, S, Z, J, L, Blanca, Ninguna
 };
 
 #endif

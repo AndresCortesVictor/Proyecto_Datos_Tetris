@@ -163,6 +163,12 @@ void Pieza::obtenerPosicionesRelativas(int posiciones[4][2]) const {
                 posiciones[3][0] = 1; posiciones[3][1] = 2;
             }
             break;
+        case TipoPieza::Blanca:
+            posiciones[0][0] = 0; posiciones[0][1] = 0;
+            posiciones[1][0] = 0; posiciones[1][1] = 0;
+            posiciones[2][0] = 0; posiciones[2][1] = 0;
+            posiciones[3][0] = 0; posiciones[3][1] = 0;
+            break;
         default:
             break;
     }

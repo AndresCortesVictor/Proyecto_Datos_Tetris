@@ -21,7 +21,8 @@ enum class EstadoJuego {
     MenuPuntajes,
     GameOver,
     CargaDatos,
-    Replay
+    Replay,
+    Pausa
 };
 
 class Juego {
@@ -45,11 +46,23 @@ private:
     std::optional<sf::Text> textoGameOver;
     std::optional<sf::Text> textoReintentar;
     std::optional<sf::Text> textoVerReplay;
+    std::optional<sf::Text> textoAvisoEvento;
     
     std::optional<sf::Text> textoNombre;
     
+    sf::RectangleShape fondoPausa;
+    std::optional<sf::Text> textoPausaTitulo;
+    std::optional<sf::Text> textoPausaContinuar;
+    std::optional<sf::Text> textoPausaSalir;
+    
+    float finVelocidad = 0.0f;
+    float finInvertidos = 0.0f;
+    float finAviso = 0.0f;
+    
     sf::Clock relojPartida;
     sf::Clock relojCaida;
+    sf::Clock relojPausa;
+    float tiempoOffset = 0.0f;
     ColaEventos colaEventos;
     ColaPiezas colaPiezas;
     PilaHold pilaHold;
@@ -68,6 +81,7 @@ private:
     void renderizarJuego();
     void renderizarGameOver();
     void renderizarCargaDatos();
+    void renderizarPausa();
     
     void guardarSnapshot();
 

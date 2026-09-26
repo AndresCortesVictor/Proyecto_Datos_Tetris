@@ -47,8 +47,24 @@ Juego::Juego() : ventana(sf::VideoMode({800, 600}), "Tetris"),
         textoVerReplay.emplace(fuente, "Presiona 'R' para ver el Replay de esta partida", 20);
         textoVerReplay->setPosition(sf::Vector2f(135.0f, 350.0f));
 
+        textoAvisoEvento.emplace(fuente, "", 25);
+        textoAvisoEvento->setFillColor(sf::Color::Red);
+        textoAvisoEvento->setPosition(sf::Vector2f(250.0f, 50.0f));
+
         textoNombre.emplace(fuente, "Ingrese su nombre: ", 20);
         textoNombre->setPosition(sf::Vector2f(300.0f, 200.0f));
+        
+        fondoPausa.setSize(sf::Vector2f(800.0f, 600.0f));
+        fondoPausa.setFillColor(sf::Color(0, 0, 0, 150));
+        
+        textoPausaTitulo.emplace(fuente, "PAUSA", 50);
+        textoPausaTitulo->setPosition(sf::Vector2f(320.0f, 200.0f));
+        
+        textoPausaContinuar.emplace(fuente, "Presiona 'P' para Continuar", 20);
+        textoPausaContinuar->setPosition(sf::Vector2f(250.0f, 300.0f));
+        
+        textoPausaSalir.emplace(fuente, "Presiona 'ESC' para Salir al Menu", 20);
+        textoPausaSalir->setPosition(sf::Vector2f(230.0f, 350.0f));
     }
 }
 
@@ -77,6 +93,7 @@ void Juego::procesarEventos() {
                 } else if (caracter == 13) {
                     if (!nombreIngresado.empty()) {
                         estadoActual = EstadoJuego::Jugando;
+                        tiempoOffset = 0.0f;
                     }
                 } else if (caracter >= 32 && caracter < 128) {
                     if (nombreIngresado.length() < 10) { 
@@ -131,14 +148,16 @@ void Juego::procesarEventos() {
                         piezaActiva = temporal;
                     }
                 } else if (keyPressed->code == sf::Keyboard::Key::Left) {
-                    if (!tablero.colisiona(piezaActiva, piezaActiva.getX() - 1, piezaActiva.getY())) {
+                    int dir = (relojPartida.getElapsedTime().asSeconds() < finInvertidos) ? 1 : -1;
+                    if (!tablero.colisiona(piezaActiva, piezaActiva.getX() + dir, piezaActiva.getY())) {
                         guardarSnapshot();
-                        piezaActiva.mover(-1, 0);
+                        piezaActiva.mover(dir, 0);
                     }
                 } else if (keyPressed->code == sf::Keyboard::Key::Right) {
-                    if (!tablero.colisiona(piezaActiva, piezaActiva.getX() + 1, piezaActiva.getY())) {
+                    int dir = (relojPartida.getElapsedTime().asSeconds() < finInvertidos) ? -1 : 1;
+                    if (!tablero.colisiona(piezaActiva, piezaActiva.getX() + dir, piezaActiva.getY())) {
                         guardarSnapshot();
-                        piezaActiva.mover(1, 0);
+                        piezaActiva.mover(dir, 0);
                     }
                 } else if (keyPressed->code == sf::Keyboard::Key::Down) {
                     if (!tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY() + 1)) {
@@ -161,10 +180,13 @@ void Juego::procesarEventos() {
                         piezaActiva.mover(0, 1);
                     }
                     
-                    tablero.fijarPieza(piezaActiva);
-                    int lineas = tablero.limpiarLineas();
-                    if (lineas > 0) {
-                        puntajeActual += (lineas * 100);
+                    if (piezaActiva.getTipo() == TipoPieza::Blanca) {
+                        int lineas = tablero.detonarBomba(piezaActiva.getY());
+                        if (lineas > 0) puntajeActual += (lineas * 100);
+                    } else {
+                        tablero.fijarPieza(piezaActiva);
+                        int lineas = tablero.limpiarLineas();
+                        if (lineas > 0) puntajeActual += (lineas * 100);
                     }
                     
                     piezaActiva = colaPiezas.sacarPieza();
@@ -188,6 +210,22 @@ void Juego::procesarEventos() {
                         tablero.importarMatriz(matrizNueva);
                         relojCaida.restart();
                     }
+                } else if (keyPressed->code == sf::Keyboard::Key::P) {
+                    estadoActual = EstadoJuego::Pausa;
+                    relojPausa.restart();
+                }
+            } else if (estadoActual == EstadoJuego::Pausa) {
+                if (keyPressed->code == sf::Keyboard::Key::P) {
+                    estadoActual = EstadoJuego::Jugando;
+                    tiempoOffset += relojPausa.getElapsedTime().asSeconds();
+                    relojCaida.restart();
+                } else if (keyPressed->code == sf::Keyboard::Key::Escape) {
+                    tablero.vaciar();
+                    colaPiezas.vaciar();
+                    colaEventos.vaciar();
+                    listaReplay.vaciar();
+                    while (!pilaHold.estaVacia()) pilaHold.pop();
+                    estadoActual = EstadoJuego::Portada;
                 }
             } else if (estadoActual == EstadoJuego::MenuPuntajes) {
                 if (keyPressed->code == sf::Keyboard::Key::Escape) {
@@ -218,6 +256,7 @@ void Juego::procesarEventos() {
                     
                     piezaActiva = colaPiezas.sacarPieza();
                     estadoActual = EstadoJuego::Jugando;
+                    tiempoOffset = 0.0f;
                 } else if (keyPressed->code == sf::Keyboard::Key::Escape) {
                     estadoActual = EstadoJuego::Portada;
                 } else if (keyPressed->code == sf::Keyboard::Key::R) {
@@ -246,7 +285,7 @@ void Juego::actualizar() {
         
         interfazVisual.actualizarHold(pilaHold.verCima().getTipo());
 
-        float tiempoActual = relojPartida.getElapsedTime().asSeconds();
+        float tiempoActual = relojPartida.getElapsedTime().asSeconds() - tiempoOffset;
         
         if (!colaEventos.estaVacia()) {
             Evento siguienteEvento = colaEventos.verFrente();
@@ -254,11 +293,17 @@ void Juego::actualizar() {
                 Evento eventoEjecutar = colaEventos.desencolarEvento(tiempoActual);
                 
                 if (eventoEjecutar.tipo == TipoEvento::AumentarVelocidad) {
-                    
+                    finVelocidad = tiempoActual + 20.0f;
+                    if (textoAvisoEvento) textoAvisoEvento->setString("!VELOCIDAD X2!");
+                    finAviso = tiempoActual + 3.0f;
                 } else if (eventoEjecutar.tipo == TipoEvento::PiezaEspecial) {
-                    
+                    piezaActiva = Pieza(TipoPieza::Blanca);
+                    if (textoAvisoEvento) textoAvisoEvento->setString("!PIEZA DESTRUCTIVA!");
+                    finAviso = tiempoActual + 3.0f;
                 } else if (eventoEjecutar.tipo == TipoEvento::InvertirControles) {
-                    
+                    finInvertidos = tiempoActual + 20.0f;
+                    if (textoAvisoEvento) textoAvisoEvento->setString("!CONTROLES INVERTIDOS!");
+                    finAviso = tiempoActual + 3.0f;
                 }
             }
         }
@@ -266,15 +311,19 @@ void Juego::actualizar() {
         interfazVisual.actualizarPuntaje(puntajeActual);
 
         // Gravedad
-        if (relojCaida.getElapsedTime().asSeconds() > 0.5f) {
+        float velocidadCaida = (tiempoActual < finVelocidad) ? 0.2f : 0.5f;
+        if (relojCaida.getElapsedTime().asSeconds() > velocidadCaida) {
             guardarSnapshot();
             if (!tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY() + 1)) {
                 piezaActiva.mover(0, 1);
             } else {
-                tablero.fijarPieza(piezaActiva);
-                int lineas = tablero.limpiarLineas();
-                if (lineas > 0) {
-                    puntajeActual += (lineas * 100);
+                if (piezaActiva.getTipo() == TipoPieza::Blanca) {
+                    int lineas = tablero.detonarBomba(piezaActiva.getY());
+                    if (lineas > 0) puntajeActual += (lineas * 100);
+                } else {
+                    tablero.fijarPieza(piezaActiva);
+                    int lineas = tablero.limpiarLineas();
+                    if (lineas > 0) puntajeActual += (lineas * 100);
                 }
                 
                 piezaActiva = colaPiezas.sacarPieza();
@@ -315,6 +364,9 @@ void Juego::renderizar() {
         renderizarCargaDatos();
     } else if (estadoActual == EstadoJuego::Replay) {
         renderizarJuego();
+    } else if (estadoActual == EstadoJuego::Pausa) {
+        renderizarJuego();
+        renderizarPausa();
     }
     
     ventana.display();
@@ -360,6 +412,10 @@ void Juego::renderizarJuego() {
     tableroVisual.renderizar(ventana, tablero);
     piezaActiva.dibujar(ventana);
     interfazVisual.renderizar(ventana);
+    
+    if (relojPartida.getElapsedTime().asSeconds() < finAviso && textoAvisoEvento) {
+        ventana.draw(*textoAvisoEvento);
+    }
 }
 
 void Juego::renderizarGameOver() {
@@ -383,4 +439,11 @@ void Juego::guardarSnapshot() {
     TipoPieza estado[20][10];
     tablero.exportarMatriz(estado);
     listaReplay.guardarEstado(estado, piezaActiva, puntajeActual);
+}
+
+void Juego::renderizarPausa() {
+    ventana.draw(fondoPausa);
+    if (textoPausaTitulo) ventana.draw(*textoPausaTitulo);
+    if (textoPausaContinuar) ventana.draw(*textoPausaContinuar);
+    if (textoPausaSalir) ventana.draw(*textoPausaSalir);
 }
