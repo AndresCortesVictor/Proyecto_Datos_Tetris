@@ -20,7 +20,8 @@ enum class EstadoJuego {
     Jugando,
     MenuPuntajes,
     GameOver,
-    CargaDatos
+    CargaDatos,
+    Replay
 };
 
 class Juego {
@@ -43,7 +44,8 @@ private:
     
     std::optional<sf::Text> textoGameOver;
     std::optional<sf::Text> textoReintentar;
-
+    std::optional<sf::Text> textoVerReplay;
+    
     std::optional<sf::Text> textoNombre;
     
     sf::Clock relojPartida;

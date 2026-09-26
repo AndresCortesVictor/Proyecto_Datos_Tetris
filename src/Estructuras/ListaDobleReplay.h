@@ -33,6 +33,9 @@ public:
     
     void guardarEstado(const TipoPieza matriz[20][10], Pieza pActiva, int puntaje);
     bool deshacer(TipoPieza destino[20][10], Pieza& pActiva, int& puntaje);
+    bool rehacer(TipoPieza destino[20][10], Pieza& pActiva, int& puntaje);
+    bool iniciarReplay(TipoPieza destino[20][10], Pieza& pActiva, int& puntaje);
+    bool avanzarReplay(TipoPieza destino[20][10], Pieza& pActiva, int& puntaje);
     void vaciar();
 };
 

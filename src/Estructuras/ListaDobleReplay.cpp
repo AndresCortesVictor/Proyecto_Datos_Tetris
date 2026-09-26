@@ -66,3 +66,38 @@ bool ListaDobleReplay::deshacer(TipoPieza destino[20][10], Pieza& pActiva, int& 
     
     return true;
 }
+
+bool ListaDobleReplay::iniciarReplay(TipoPieza destino[20][10], Pieza& pActiva, int& puntaje) {
+    if (cabeza == nullptr) {
+        return false;
+    }
+    actual = cabeza;
+    for(int i = 0; i < 20; i++) {
+        for(int j = 0; j < 10; j++) {
+            destino[i][j] = actual->matriz[i][j];
+        }
+    }
+    pActiva = actual->piezaActiva;
+    puntaje = actual->puntaje;
+    return true;
+}
+
+bool ListaDobleReplay::avanzarReplay(TipoPieza destino[20][10], Pieza& pActiva, int& puntaje) {
+    if (actual == nullptr || actual->siguiente == nullptr) {
+        return false;
+    }
+    actual = actual->siguiente;
+    for(int i = 0; i < 20; i++) {
+        for(int j = 0; j < 10; j++) {
+            destino[i][j] = actual->matriz[i][j];
+        }
+    }
+    pActiva = actual->piezaActiva;
+    puntaje = actual->puntaje;
+    return true;
+}
+
+bool ListaDobleReplay::rehacer(TipoPieza destino[20][10], Pieza& pActiva, int& puntaje) {
+    // Rehacer es lógicamente idéntico a avanzar en el replay
+    return avanzarReplay(destino, pActiva, puntaje);
+}

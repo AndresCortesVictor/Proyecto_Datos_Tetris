@@ -43,6 +43,9 @@ Juego::Juego() : ventana(sf::VideoMode({800, 600}), "Tetris"),
         
         textoReintentar.emplace(fuente, "Presiona ENTER para reiniciar o ESC al Menu", 20);
         textoReintentar->setPosition(sf::Vector2f(160.0f, 300.0f));
+        
+        textoVerReplay.emplace(fuente, "Presiona 'R' para ver el Replay de esta partida", 20);
+        textoVerReplay->setPosition(sf::Vector2f(135.0f, 350.0f));
 
         textoNombre.emplace(fuente, "Ingrese su nombre: ", 20);
         textoNombre->setPosition(sf::Vector2f(300.0f, 200.0f));
@@ -177,6 +180,13 @@ void Juego::procesarEventos() {
                     TipoPieza matrizVieja[20][10];
                     if (listaReplay.deshacer(matrizVieja, piezaActiva, puntajeActual)) {
                         tablero.importarMatriz(matrizVieja);
+                        relojCaida.restart();
+                    }
+                } else if (keyPressed->code == sf::Keyboard::Key::X) {
+                    TipoPieza matrizNueva[20][10];
+                    if (listaReplay.rehacer(matrizNueva, piezaActiva, puntajeActual)) {
+                        tablero.importarMatriz(matrizNueva);
+                        relojCaida.restart();
                     }
                 }
             } else if (estadoActual == EstadoJuego::MenuPuntajes) {
@@ -210,6 +220,17 @@ void Juego::procesarEventos() {
                     estadoActual = EstadoJuego::Jugando;
                 } else if (keyPressed->code == sf::Keyboard::Key::Escape) {
                     estadoActual = EstadoJuego::Portada;
+                } else if (keyPressed->code == sf::Keyboard::Key::R) {
+                    TipoPieza matrizVieja[20][10];
+                    if (listaReplay.iniciarReplay(matrizVieja, piezaActiva, puntajeActual)) {
+                        tablero.importarMatriz(matrizVieja);
+                        estadoActual = EstadoJuego::Replay;
+                        relojCaida.restart();
+                    }
+                }
+            } else if (estadoActual == EstadoJuego::Replay) {
+                if (keyPressed->code == sf::Keyboard::Key::Escape) {
+                    estadoActual = EstadoJuego::GameOver;
                 }
             }
         }
@@ -266,6 +287,16 @@ void Juego::actualizar() {
             }
             relojCaida.restart();
         }
+    } else if (estadoActual == EstadoJuego::Replay) {
+        if (relojCaida.getElapsedTime().asSeconds() > 0.1f) {
+            TipoPieza matrizVieja[20][10];
+            if (listaReplay.avanzarReplay(matrizVieja, piezaActiva, puntajeActual)) {
+                tablero.importarMatriz(matrizVieja);
+            } else {
+                estadoActual = EstadoJuego::GameOver;
+            }
+            relojCaida.restart();
+        }
     }
 }
 
@@ -282,6 +313,8 @@ void Juego::renderizar() {
         renderizarGameOver();
     } else if (estadoActual == EstadoJuego::CargaDatos){
         renderizarCargaDatos();
+    } else if (estadoActual == EstadoJuego::Replay) {
+        renderizarJuego();
     }
     
     ventana.display();
@@ -335,6 +368,9 @@ void Juego::renderizarGameOver() {
     }
     if (textoReintentar) {
         ventana.draw(*textoReintentar);
+    }
+    if (textoVerReplay) {
+        ventana.draw(*textoVerReplay);
     }
 }
 
