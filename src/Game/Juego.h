@@ -15,7 +15,8 @@
 enum class EstadoJuego {
     Portada,
     Jugando,
-    MenuPuntajes
+    MenuPuntajes,
+    GameOver
 };
 
 class Juego {
@@ -36,6 +37,9 @@ private:
     std::optional<sf::Text> textoInstruccionPuntajes;
     std::optional<sf::Text> textosPuntajes[10];
     
+    std::optional<sf::Text> textoGameOver;
+    std::optional<sf::Text> textoReintentar;
+    
     sf::Clock relojPartida;
     sf::Clock relojCaida;
     ColaEventos colaEventos;
@@ -52,6 +56,7 @@ private:
     void renderizarPortada();
     void renderizarMenuPuntajes();
     void renderizarJuego();
+    void renderizarGameOver();
 
 public:
     Juego();

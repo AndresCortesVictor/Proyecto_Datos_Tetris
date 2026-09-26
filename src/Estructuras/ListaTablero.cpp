@@ -117,3 +117,13 @@ TipoPieza ListaTablero::obtenerCelda(int fila, int columna) const {
     }
     return TipoPieza::Ninguna;
 }
+
+void ListaTablero::vaciar() {
+    NodoFila* actual = cabeza;
+    while (actual != nullptr) {
+        for (int i = 0; i < 10; ++i) {
+            actual->celdas[i] = TipoPieza::Ninguna;
+        }
+        actual = actual->siguiente;
+    }
+}

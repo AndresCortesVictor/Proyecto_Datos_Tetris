@@ -71,3 +71,11 @@ Evento ColaEventos::verFrente() const {
     if (cabeza != nullptr) return cabeza->dato;
     return Evento{TipoEvento::AumentarVelocidad, 0.0f};
 }
+
+void ColaEventos::vaciar() {
+    while (cabeza != nullptr) {
+        NodoEvento* temp = cabeza;
+        cabeza = cabeza->siguiente;
+        delete temp;
+    }
+}

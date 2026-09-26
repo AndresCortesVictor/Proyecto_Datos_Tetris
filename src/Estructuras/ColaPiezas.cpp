@@ -88,3 +88,17 @@ Pieza ColaPiezas::verDentro(int posicion) const {
 bool ColaPiezas::estaVacia() const {
     return frente == nullptr;
 }
+
+void ColaPiezas::vaciar() {
+    while (frente != nullptr) {
+        NodoPieza* temp = frente;
+        frente = frente->siguiente;
+        delete temp;
+    }
+    final = nullptr;
+    cantidad = 0;
+    
+    Pieza bolsa[7];
+    generarBolsa(bolsa);
+    insertarBolsa(bolsa);
+}

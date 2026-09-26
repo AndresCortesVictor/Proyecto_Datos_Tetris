@@ -22,6 +22,7 @@ public:
     Evento desencolarEvento(float tiempoActual);
     bool estaVacia() const;
     Evento verFrente() const;
+    void vaciar();
 };
 
 #endif

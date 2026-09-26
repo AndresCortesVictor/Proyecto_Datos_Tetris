@@ -36,6 +36,13 @@ Juego::Juego() : ventana(sf::VideoMode({800, 600}), "Tetris"),
             textosPuntajes[i].emplace(fuente, "", 24);
             textosPuntajes[i]->setPosition(sf::Vector2f(250.0f, 160.0f + (i * 40.0f)));
         }
+        
+        textoGameOver.emplace(fuente, "GAME OVER", 60);
+        textoGameOver->setPosition(sf::Vector2f(230.0f, 200.0f));
+        textoGameOver->setFillColor(sf::Color::Red);
+        
+        textoReintentar.emplace(fuente, "Presiona ENTER para reiniciar o ESC al Menu", 20);
+        textoReintentar->setPosition(sf::Vector2f(160.0f, 300.0f));
     }
 }
 
@@ -57,8 +64,16 @@ void Juego::procesarEventos() {
             auto keyPressed = evento->getIf<sf::Event::KeyPressed>();
             if (estadoActual == EstadoJuego::Portada) {
                 if (keyPressed->code == sf::Keyboard::Key::Enter) {
-                    estadoActual = EstadoJuego::Jugando;
+                    tablero.vaciar();
+                    colaPiezas.vaciar();
+                    colaEventos.vaciar();
+                    while (!pilaHold.estaVacia()) pilaHold.pop();
+                    
+                    puntajeActual = 0;
                     relojPartida.restart();
+                    relojCaida.restart();
+                    
+                    estadoActual = EstadoJuego::Jugando;
                     
                     Evento e1 = {TipoEvento::AumentarVelocidad, 20.0f};
                     Evento e2 = {TipoEvento::PiezaEspecial, 45.0f};
@@ -108,6 +123,29 @@ void Juego::procesarEventos() {
                 } else if (keyPressed->code == sf::Keyboard::Key::Num2) {
                     gestorPuntajes.ordenarPorMerge();
                 }
+            } else if (estadoActual == EstadoJuego::GameOver) {
+                if (keyPressed->code == sf::Keyboard::Key::Enter) {
+                    tablero.vaciar();
+                    colaPiezas.vaciar();
+                    colaEventos.vaciar();
+                    while (!pilaHold.estaVacia()) pilaHold.pop();
+                    
+                    puntajeActual = 0;
+                    relojPartida.restart();
+                    relojCaida.restart();
+                    
+                    Evento e1 = {TipoEvento::AumentarVelocidad, 20.0f};
+                    Evento e2 = {TipoEvento::PiezaEspecial, 45.0f};
+                    Evento e3 = {TipoEvento::InvertirControles, 60.0f};
+                    colaEventos.encolarOrdenado(e1);
+                    colaEventos.encolarOrdenado(e2);
+                    colaEventos.encolarOrdenado(e3);
+                    
+                    piezaActiva = colaPiezas.sacarPieza();
+                    estadoActual = EstadoJuego::Jugando;
+                } else if (keyPressed->code == sf::Keyboard::Key::Escape) {
+                    estadoActual = EstadoJuego::Portada;
+                }
             }
         }
     }
@@ -156,7 +194,9 @@ void Juego::actualizar() {
                 
                 // Game Over básico
                 if (tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY())) {
-                    estadoActual = EstadoJuego::Portada; // Volver al inicio por ahora
+                    gestorPuntajes.agregarPuntaje("Jugador", puntajeActual);
+                    gestorPuntajes.guardarPuntajes();
+                    estadoActual = EstadoJuego::GameOver;
                 }
             }
             relojCaida.restart();
@@ -173,6 +213,8 @@ void Juego::renderizar() {
         renderizarMenuPuntajes();
     } else if (estadoActual == EstadoJuego::Jugando) {
         renderizarJuego();
+    } else if (estadoActual == EstadoJuego::GameOver) {
+        renderizarGameOver();
     }
     
     ventana.display();
@@ -218,4 +260,13 @@ void Juego::renderizarJuego() {
     tableroVisual.renderizar(ventana, tablero);
     piezaActiva.dibujar(ventana);
     interfazVisual.renderizar(ventana);
+}
+
+void Juego::renderizarGameOver() {
+    if (textoGameOver) {
+        ventana.draw(*textoGameOver);
+    }
+    if (textoReintentar) {
+        ventana.draw(*textoReintentar);
+    }
 }

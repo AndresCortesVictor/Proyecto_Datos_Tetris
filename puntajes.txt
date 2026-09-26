@@ -13,3 +13,5 @@ Javier 1900
 Lucia 3700
 Mateo 2400
 Camila 5200
+Jugador 1300
+Jugador 0

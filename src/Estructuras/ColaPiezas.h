@@ -25,6 +25,7 @@ public:
     Pieza sacarPieza();
     Pieza verDentro(int posicion) const;
     bool estaVacia() const;
+    void vaciar();
 };
 
 #endif

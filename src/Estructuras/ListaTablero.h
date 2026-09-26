@@ -27,6 +27,7 @@ public:
     void fijarPieza(const Pieza& p);
     int limpiarLineas();
     TipoPieza obtenerCelda(int fila, int columna) const;
+    void vaciar();
 };
 
 #endif
