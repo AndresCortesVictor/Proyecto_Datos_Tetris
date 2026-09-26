@@ -9,6 +9,7 @@ private:
     TipoPieza tipo;
     int posX;
     int posY;
+    int estadoRotacion;
     PiezaVisual visual;
 
     void actualizarVisual();
@@ -19,6 +20,8 @@ public:
 
     TipoPieza getTipo() const;
     void mover(int dx, int dy);
+    void rotar();
+    void desrotar();
     void dibujar(sf::RenderWindow& ventana);
 
     int getX() const;

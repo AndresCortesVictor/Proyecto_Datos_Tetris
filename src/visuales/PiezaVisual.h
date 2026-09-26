@@ -11,7 +11,7 @@ private:
 
 public:
     PiezaVisual();
-    void configurar(TipoPieza tipo, float offsetX, float offsetY, int gridX = 0, int gridY = 0, float escala = 1.0f);
+    void configurar(TipoPieza tipo, float offsetX, float offsetY, int gridX = 0, int gridY = 0, float escala = 1.0f, int (*coordenadasRotadas)[2] = nullptr);
     void renderizar(sf::RenderWindow& ventana);
 };
 

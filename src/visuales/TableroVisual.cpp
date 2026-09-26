@@ -8,6 +8,8 @@ TableroVisual::TableroVisual(float x, float y) : posicionOrigen(x, y) {
 
     celdaOcupada.setSize(sf::Vector2f(TAMANO_CELDA - 1.0f, TAMANO_CELDA - 1.0f));
     celdaOcupada.setFillColor(sf::Color::White);
+
+    // TRATAR DE CORREGIR ESTO DE LAS CELDAS OCUPADAS
 }
 
 void TableroVisual::renderizar(sf::RenderWindow& ventana, const ListaTablero& tableroLogico) {

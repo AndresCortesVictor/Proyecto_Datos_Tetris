@@ -94,6 +94,11 @@ void Juego::procesarEventos() {
                         piezaActiva.mover(0, 1);
                         relojCaida.restart();
                     }
+                } else if (keyPressed->code == sf::Keyboard::Key::Up) {
+                    piezaActiva.rotar();
+                    if (tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY())) {
+                        piezaActiva.desrotar(); // No rota si no cabe
+                    }
                 }
             } else if (estadoActual == EstadoJuego::MenuPuntajes) {
                 if (keyPressed->code == sf::Keyboard::Key::Escape) {
