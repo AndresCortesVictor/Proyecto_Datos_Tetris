@@ -12,11 +12,14 @@
 #include "../Estructuras/ListaTablero.h"
 #include "Pieza.h"
 
+using namespace std;
+
 enum class EstadoJuego {
     Portada,
     Jugando,
     MenuPuntajes,
-    GameOver
+    GameOver,
+    CargaDatos
 };
 
 class Juego {
@@ -39,6 +42,8 @@ private:
     
     std::optional<sf::Text> textoGameOver;
     std::optional<sf::Text> textoReintentar;
+
+    std::optional<sf::Text> textoNombre;
     
     sf::Clock relojPartida;
     sf::Clock relojCaida;
@@ -49,6 +54,7 @@ private:
     ListaTablero tablero;
     Pieza piezaActiva;
     int puntajeActual;
+    string nombreIngresado;
 
     void procesarEventos();
     void actualizar();
@@ -57,6 +63,7 @@ private:
     void renderizarMenuPuntajes();
     void renderizarJuego();
     void renderizarGameOver();
+    void renderizarCargaDatos();
 
 public:
     Juego();

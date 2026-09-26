@@ -43,6 +43,9 @@ Juego::Juego() : ventana(sf::VideoMode({800, 600}), "Tetris"),
         
         textoReintentar.emplace(fuente, "Presiona ENTER para reiniciar o ESC al Menu", 20);
         textoReintentar->setPosition(sf::Vector2f(160.0f, 300.0f));
+
+        textoNombre.emplace(fuente, "Ingrese su nombre: ", 20);
+        textoNombre->setPosition(sf::Vector2f(300.0f, 200.0f));
     }
 }
 
@@ -59,6 +62,30 @@ void Juego::procesarEventos() {
         if (evento->is<sf::Event::Closed>()) {
             ventana.close();
         }
+
+        if (estadoActual == EstadoJuego::CargaDatos) {
+            if (const auto* textEvent = evento->getIf<sf::Event::TextEntered>()) {
+                char32_t caracter = textEvent->unicode;
+                
+                if (caracter == 8) {
+                    if (!nombreIngresado.empty()) {
+                        nombreIngresado.pop_back();
+                    }
+                } else if (caracter == 13) {
+                    if (!nombreIngresado.empty()) {
+                        estadoActual = EstadoJuego::Jugando;
+                    }
+                } else if (caracter >= 32 && caracter < 128) {
+                    if (nombreIngresado.length() < 10) { 
+                        nombreIngresado += static_cast<char>(caracter);
+                    }
+                }
+                
+                if (textoNombre) {
+                    textoNombre->setString("Ingrese su nombre: " + nombreIngresado);
+                }
+            }
+        }
         
         if (evento->is<sf::Event::KeyPressed>()) {
             auto keyPressed = evento->getIf<sf::Event::KeyPressed>();
@@ -73,8 +100,11 @@ void Juego::procesarEventos() {
                     relojPartida.restart();
                     relojCaida.restart();
                     
-                    estadoActual = EstadoJuego::Jugando;
-                    
+                    estadoActual = EstadoJuego::CargaDatos;
+                    nombreIngresado = "";
+                    if (textoNombre) {
+                        textoNombre->setString("Ingrese su nombre: ");
+                    }
                     Evento e1 = {TipoEvento::AumentarVelocidad, 20.0f};
                     Evento e2 = {TipoEvento::PiezaEspecial, 45.0f};
                     Evento e3 = {TipoEvento::InvertirControles, 60.0f};
@@ -128,7 +158,7 @@ void Juego::procesarEventos() {
                     piezaActiva = colaPiezas.sacarPieza();
                     
                     if (tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY())) {
-                        gestorPuntajes.agregarPuntaje("Jugador", puntajeActual);
+                        gestorPuntajes.agregarPuntaje(nombreIngresado, puntajeActual);
                         gestorPuntajes.guardarPuntajes();
                         estadoActual = EstadoJuego::GameOver; 
                     }
@@ -214,7 +244,7 @@ void Juego::actualizar() {
                 
                 // Game Over básico
                 if (tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY())) {
-                    gestorPuntajes.agregarPuntaje("Jugador", puntajeActual);
+                    gestorPuntajes.agregarPuntaje(nombreIngresado, puntajeActual);
                     gestorPuntajes.guardarPuntajes();
                     estadoActual = EstadoJuego::GameOver;
                 }
@@ -235,6 +265,8 @@ void Juego::renderizar() {
         renderizarJuego();
     } else if (estadoActual == EstadoJuego::GameOver) {
         renderizarGameOver();
+    } else if (estadoActual == EstadoJuego::CargaDatos){
+        renderizarCargaDatos();
     }
     
     ventana.display();
@@ -288,5 +320,11 @@ void Juego::renderizarGameOver() {
     }
     if (textoReintentar) {
         ventana.draw(*textoReintentar);
+    }
+}
+
+void Juego::renderizarCargaDatos(){
+    if (textoNombre){
+        ventana.draw(*textoNombre);
     }
 }
