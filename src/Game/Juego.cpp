@@ -114,6 +114,26 @@ void Juego::procesarEventos() {
                     if (tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY())) {
                         piezaActiva.desrotar(); // No rota si no cabe
                     }
+                } else if (keyPressed->code == sf::Keyboard::Key::Space) {
+                    while (!tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY() + 1)) {
+                        piezaActiva.mover(0, 1);
+                    }
+                    
+                    tablero.fijarPieza(piezaActiva);
+                    int lineas = tablero.limpiarLineas();
+                    if (lineas > 0) {
+                        puntajeActual += (lineas * 100);
+                    }
+                    
+                    piezaActiva = colaPiezas.sacarPieza();
+                    
+                    if (tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY())) {
+                        gestorPuntajes.agregarPuntaje("Jugador", puntajeActual);
+                        gestorPuntajes.guardarPuntajes();
+                        estadoActual = EstadoJuego::GameOver; 
+                    }
+                    
+                    relojCaida.restart();
                 }
             } else if (estadoActual == EstadoJuego::MenuPuntajes) {
                 if (keyPressed->code == sf::Keyboard::Key::Escape) {
