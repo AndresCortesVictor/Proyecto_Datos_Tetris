@@ -94,6 +94,7 @@ void Juego::procesarEventos() {
                     tablero.vaciar();
                     colaPiezas.vaciar();
                     colaEventos.vaciar();
+                    listaReplay.vaciar();
                     while (!pilaHold.estaVacia()) pilaHold.pop();
                     
                     puntajeActual = 0;
@@ -128,23 +129,31 @@ void Juego::procesarEventos() {
                     }
                 } else if (keyPressed->code == sf::Keyboard::Key::Left) {
                     if (!tablero.colisiona(piezaActiva, piezaActiva.getX() - 1, piezaActiva.getY())) {
+                        guardarSnapshot();
                         piezaActiva.mover(-1, 0);
                     }
                 } else if (keyPressed->code == sf::Keyboard::Key::Right) {
                     if (!tablero.colisiona(piezaActiva, piezaActiva.getX() + 1, piezaActiva.getY())) {
+                        guardarSnapshot();
                         piezaActiva.mover(1, 0);
                     }
                 } else if (keyPressed->code == sf::Keyboard::Key::Down) {
                     if (!tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY() + 1)) {
+                        guardarSnapshot();
                         piezaActiva.mover(0, 1);
                         relojCaida.restart();
                     }
                 } else if (keyPressed->code == sf::Keyboard::Key::Up) {
                     piezaActiva.rotar();
                     if (tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY())) {
-                        piezaActiva.desrotar(); // No rota si no cabe
+                        piezaActiva.desrotar();
+                    } else {
+                        piezaActiva.desrotar();
+                        guardarSnapshot();
+                        piezaActiva.rotar();
                     }
                 } else if (keyPressed->code == sf::Keyboard::Key::Space) {
+                    guardarSnapshot();
                     while (!tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY() + 1)) {
                         piezaActiva.mover(0, 1);
                     }
@@ -164,6 +173,11 @@ void Juego::procesarEventos() {
                     }
                     
                     relojCaida.restart();
+                } else if (keyPressed->code == sf::Keyboard::Key::Z) {
+                    TipoPieza matrizVieja[20][10];
+                    if (listaReplay.deshacer(matrizVieja, piezaActiva, puntajeActual)) {
+                        tablero.importarMatriz(matrizVieja);
+                    }
                 }
             } else if (estadoActual == EstadoJuego::MenuPuntajes) {
                 if (keyPressed->code == sf::Keyboard::Key::Escape) {
@@ -178,6 +192,7 @@ void Juego::procesarEventos() {
                     tablero.vaciar();
                     colaPiezas.vaciar();
                     colaEventos.vaciar();
+                    listaReplay.vaciar();
                     while (!pilaHold.estaVacia()) pilaHold.pop();
                     
                     puntajeActual = 0;
@@ -231,6 +246,7 @@ void Juego::actualizar() {
 
         // Gravedad
         if (relojCaida.getElapsedTime().asSeconds() > 0.5f) {
+            guardarSnapshot();
             if (!tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY() + 1)) {
                 piezaActiva.mover(0, 1);
             } else {
@@ -242,7 +258,6 @@ void Juego::actualizar() {
                 
                 piezaActiva = colaPiezas.sacarPieza();
                 
-                // Game Over básico
                 if (tablero.colisiona(piezaActiva, piezaActiva.getX(), piezaActiva.getY())) {
                     gestorPuntajes.agregarPuntaje(nombreIngresado, puntajeActual);
                     gestorPuntajes.guardarPuntajes();
@@ -327,4 +342,9 @@ void Juego::renderizarCargaDatos(){
     if (textoNombre){
         ventana.draw(*textoNombre);
     }
+}
+void Juego::guardarSnapshot() {
+    TipoPieza estado[20][10];
+    tablero.exportarMatriz(estado);
+    listaReplay.guardarEstado(estado, piezaActiva, puntajeActual);
 }

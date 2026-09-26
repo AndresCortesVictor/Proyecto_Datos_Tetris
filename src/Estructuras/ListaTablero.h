@@ -28,6 +28,8 @@ public:
     int limpiarLineas();
     TipoPieza obtenerCelda(int fila, int columna) const;
     void vaciar();
+    void exportarMatriz(TipoPieza destino[20][10]) const;
+    void importarMatriz(const TipoPieza origen[20][10]);
 };
 
 #endif

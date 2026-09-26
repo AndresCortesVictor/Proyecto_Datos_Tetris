@@ -127,3 +127,28 @@ void ListaTablero::vaciar() {
         actual = actual->siguiente;
     }
 }
+
+void ListaTablero::exportarMatriz(TipoPieza destino[20][10]) const {
+    NodoFila* actual = cabeza;
+    for (int fila = 0; fila < 20; ++fila) {
+        for (int col = 0; col < 10; ++col) {
+            if (actual != nullptr) {
+                destino[fila][col] = actual->celdas[col];
+            } else {
+                destino[fila][col] = TipoPieza::Ninguna;
+            }
+        }
+        if (actual != nullptr) actual = actual->siguiente;
+    }
+}
+
+void ListaTablero::importarMatriz(const TipoPieza origen[20][10]) {
+    NodoFila* actual = cabeza;
+    for (int fila = 0; fila < 20; ++fila) {
+        if (actual == nullptr) break;
+        for (int col = 0; col < 10; ++col) {
+            actual->celdas[col] = origen[fila][col];
+        }
+        actual = actual->siguiente;
+    }
+}

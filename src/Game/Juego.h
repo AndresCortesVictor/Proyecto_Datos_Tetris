@@ -10,6 +10,7 @@
 #include "../Estructuras/PilaHold.h"
 #include "../Estructuras/GestorPuntajes.h"
 #include "../Estructuras/ListaTablero.h"
+#include "../Estructuras/ListaDobleReplay.h"
 #include "Pieza.h"
 
 using namespace std;
@@ -51,6 +52,7 @@ private:
     ColaPiezas colaPiezas;
     PilaHold pilaHold;
     GestorPuntajes gestorPuntajes;
+    ListaDobleReplay listaReplay;
     ListaTablero tablero;
     Pieza piezaActiva;
     int puntajeActual;
@@ -64,6 +66,8 @@ private:
     void renderizarJuego();
     void renderizarGameOver();
     void renderizarCargaDatos();
+    
+    void guardarSnapshot();
 
 public:
     Juego();
