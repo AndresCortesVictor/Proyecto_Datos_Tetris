@@ -160,13 +160,12 @@ int ListaTablero::detonarBomba(int filaY) {
     while (actual != nullptr && index <= filaY + 1) {
         if (index == filaY || index == filaY + 1) {
             for (int c = 0; c < 10; c++) {
-                actual->celdas[c] = TipoPieza::I; // Llenamos de algo para que se considere línea llena
+                actual->celdas[c] = TipoPieza::I;
             }
             lineasAfectadas++;
         }
         actual = actual->siguiente;
         index++;
     }
-    // Usamos la misma función para barrerlas
     return limpiarLineas();
 }
